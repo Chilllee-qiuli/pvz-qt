@@ -18,6 +18,29 @@
 game::game(QWidget *parent)
     : QWidget{parent}
 {
+    // 1. 计算缩放因子（基于屏幕高度与基准高度的比例）
+    QScreen* screen = QGuiApplication::primaryScreen();
+    int screenHeight = screen->geometry().height();
+    scaleFactor = screenHeight / (double)baseHeight;  // 例如屏幕高1080px，1080/600=1.8
+
+    // 限制缩放范围（避免极端分辨率问题）
+    if (scaleFactor < 0.8) scaleFactor = 0.8;
+    if (scaleFactor > 2.0) scaleFactor = 2.0;
+
+    // 2. 调整场景大小（按缩放因子缩放）
+    scene = new QGraphicsScene(this);
+    int scaledSceneWidth = baseWidth * scaleFactor;
+    int scaledSceneHeight = baseHeight * scaleFactor;
+    scene->setSceneRect(0, 0, scaledSceneWidth, scaledSceneHeight);  // 取消固定150偏移，改为从(0,0)开始
+
+    // 3. 调整视图大小和属性
+    view = new QGraphicsView(scene, this);
+    view->resize(scaledSceneWidth, scaledSceneHeight);  // 视图大小随场景缩放
+    view->setRenderHint(QPainter::SmoothPixmapTransform);  // 缩放时平滑图片
+    view->setBackgroundBrush(QPixmap(":/new/prefix1/Background.jpg").scaled(
+        scaledSceneWidth, scaledSceneHeight,
+        Qt::KeepAspectRatio, Qt::SmoothTransformation  // 背景图保持比例缩放
+        ));
     mQSound=new QSound(":/new/prefix2/Grazy.wav");
     mQSound->play();
     mQTimer=new QTimer(this);
@@ -31,19 +54,21 @@ game::game(QWidget *parent)
     //shop是那个部分
     //应该是上面选择植物的那栏
     shop *sh = new shop;
-    sh->setPos(520, 45);
+    sh->setPos(520 * scaleFactor, 45 * scaleFactor);  // 缩放后位置
     scene->addItem(sh);
     //右上角铁锹
     shovel *sho = new shovel;
-    sho->setPos(830, 40);
+    sho->setPos(830 * scaleFactor, 40 * scaleFactor);
     scene->addItem(sho);
     //暂停按钮
     pauseBtn = new PauseButton(this);
-    pauseBtn->setPos(1000, 40);
+    pauseBtn->setPos(1000 * scaleFactor, 40 * scaleFactor);
     scene->addItem(pauseBtn);
     //地图，就是草坪
     Map *map = new Map;
-    map->setPos(618, 326);
+    map->setPos(618 * scaleFactor, 326 * scaleFactor);
+    // 地图自身大小也需要缩放（假设Map类有setScale方法，或在其内部处理）
+    map->setScale(scaleFactor);
     scene->addItem(map);
 
     //小推车
@@ -51,6 +76,7 @@ game::game(QWidget *parent)
     {
         Mower *mower = new Mower;
         mower->setPos(215, 120 + 95 * i);
+        mower->setScale(scaleFactor);  // 小推车图片缩放
         scene->addItem(mower);
     }
 
@@ -97,7 +123,8 @@ void game::addZombie()
         case ZType::Screen:   zom = new ScreenZombie;   break;
         case ZType::Football: zom = new FootballZombie; break;
         }
-        zom->setPos(1028, 120 + 95 * row);
+        zom->setPos(1028 * scaleFactor, (120 + 95 * row) * scaleFactor);
+        zom->setScale(scaleFactor);  // 僵尸图片缩放
         scene->addItem(zom);
     };
 

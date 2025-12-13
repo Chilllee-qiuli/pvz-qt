@@ -23,6 +23,9 @@ public:
     ~game() override;
     void addZombie();
     void check();
+    double scaleFactor;       // 全局缩放因子
+    int baseWidth = 900;      // 基准宽度（原始设计分辨率）
+    int baseHeight = 600;     // 基准高度（原始设计分辨率）
 
 signals:
 
