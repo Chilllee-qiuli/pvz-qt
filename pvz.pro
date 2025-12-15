@@ -41,7 +41,8 @@ SOURCES += \
     conezombie.cpp \
     footballzombie.cpp \
     screenzombie.cpp \
-    zombieshow.cpp
+    zombieshow.cpp \
+    pausebutton.cpp
 
 HEADERS += \
     Mainwindow.h \
@@ -75,7 +76,8 @@ HEADERS += \
     conezombie.h \
     footballzombie.h \
     screenzombie.h \
-    zombieshow.h
+    zombieshow.h \
+    pausebutton.h
 
 FORMS += \
     Mainwindow.ui \

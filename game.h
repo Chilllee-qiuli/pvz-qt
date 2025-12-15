@@ -7,6 +7,7 @@
 #include <QTimer>
 #include <QSound>
 
+class PauseButton; // 前向声明
 
 class game : public QWidget
 {
@@ -16,6 +17,8 @@ public:
     QTimer* mQTimer;
     QGraphicsView* view;
     QGraphicsScene* scene;
+    PauseButton* pauseBtn;
+    double mScaleFactor;
     explicit game(QWidget *parent = nullptr);
     ~game() override;
     void addZombie();
