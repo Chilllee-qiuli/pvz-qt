@@ -18,7 +18,7 @@ class MainWindow : public QMainWindow
 
 public:
     QTimer* mqtimer;
-    QPainter* mpainter_1;
+     QPainter* mpainter_1;
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     void paintEvent(QPaintEvent *event);

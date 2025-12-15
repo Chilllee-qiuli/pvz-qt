@@ -39,7 +39,7 @@ game::game(QWidget *parent)
     scene->addItem(sho);
     //暂停按钮
     pauseBtn = new PauseButton(this);
-    pauseBtn->setPos(1000, 40);
+    pauseBtn->setPos(900, 30);
     scene->addItem(pauseBtn);
     //地图，就是草坪
     Map *map = new Map;
@@ -114,22 +114,22 @@ void game::addZombie()
     // 你可以随便调这些常量来改手感。
 
     auto spawnNormal = [&]() {
-        // 1) 发育保护：前 25 秒非常慢且只出普通（避免开局崩）
+        // 1) 发育保护：前 50 秒非常慢且只出普通（避免开局崩）
         //    之后逐步加速，直到一个下限（别快到离谱）
         const int t = elapsedMs;
 
         int maxtimeFrames = 0; // “最大间隔”（单位：tick次数）
-        if (t < 25000) {
+        if (t < 50000) {
             // 约 8~14 秒一只（250~420 帧）
             maxtimeFrames = 250 + (qrand() % 171);
         } else {
-            // 25s 之后开始爬坡：从 ~6s 一只慢慢加速到 ~1.2s 一只
+            // 50s 之后开始爬坡：从 ~6s 一只慢慢加速到 ~1.2s 一只
             // 6s ≈ 6000/33 ≈ 182 帧；1.2s ≈ 36 帧
             // 用线性/分段都行，这里用简单线性 + clamp
-            int progressed = (t - 25000);           // 从 0 开始爬坡
+            int progressed = (t - 50000);           // 从 0 开始爬坡
             int start = 182;
             int end   = 36;
-            int duration = 120000;                  // 用 120s 逐渐爬到最强（可调）
+            int duration = 200000;                  // 用 200s 逐渐爬到最强（可调）
             int delta = (start - end);
             int reduce = (int)((1.0 * progressed / duration) * delta);
             if (reduce < 0) reduce = 0;
@@ -150,28 +150,28 @@ void game::addZombie()
             // 3) 正常刷怪类型随时间变硬（但不要太激进）
             int r = qrand() % 100;
 
-            if (t < 25000) {
+            if (t < 50000) {
                 // 发育期只出普通
                 spawnOne(ZType::Basic, randRow());
                 return;
             }
 
-            // 25s 后：逐渐提高硬怪占比
+            // 50s 后：逐渐提高硬怪占比
             // 这里用时间分段控制概率（很好调）
-            if (t < 60000) {
-                // 25~60s：普通多、路障少、铁桶极少
+            if (t < 100000) {
+                // 50~100s：普通多、路障少、铁桶极少
                 if (r < 70) spawnOne(ZType::Basic, randRow());
                 else if (r < 95) spawnOne(ZType::Cone, randRow());
                 else spawnOne(ZType::Bucket, randRow());
-            } else if (t < 120000) {
-                // 60~120s：开始出现铁桶/读报，橄榄球少量
+            } else if (t < 200000) {
+                // 100~200s：开始出现铁桶/读报，橄榄球少量
                 if (r < 45) spawnOne(ZType::Basic, randRow());
                 else if (r < 75) spawnOne(ZType::Cone, randRow());
                 else if (r < 90) spawnOne(ZType::Bucket, randRow());
                 else if (r < 97) spawnOne(ZType::Screen, randRow());
                 else spawnOne(ZType::Football, randRow());
             } else {
-                // 120s+：偏后期
+                // 200s+：偏后期
                 if (r < 25) spawnOne(ZType::Basic, randRow());
                 else if (r < 55) spawnOne(ZType::Cone, randRow());
                 else if (r < 80) spawnOne(ZType::Bucket, randRow());
@@ -208,7 +208,8 @@ void game::addZombie()
     // 你只需要改这里的表，就能改“旗帜波时间点和强度”
     static const WaveCfg waveCfgs[] = {
         // 触发  ,持续 ,总数,喷发间隔,每次喷几只, 权重...
-        { 45000,  7000, 18,   350,     2, { {ZType::Cone,50},{ZType::Bucket,35},{ZType::Basic,15} }, 3 }, // 第一旗帜波
+        // 第一波怪太超模了去掉吧
+       // { 45000,  7000, 18,   350,     2, { {ZType::Cone,50},{ZType::Bucket,35},{ZType::Basic,15} }, 3 }, // 第一旗帜波
         { 75000,  8000, 26,   320,     3, { {ZType::Cone,35},{ZType::Bucket,40},{ZType::Screen,15},{ZType::Basic,10} }, 4 },
         {110000,  9000, 34,   280,     4, { {ZType::Bucket,35},{ZType::Screen,25},{ZType::Football,15},{ZType::Cone,25} }, 4 }, // 大波
         // 继续加：{ triggerMs, durationMs, total, burstEveryMs, burstCount, rules..., ruleCount }

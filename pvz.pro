@@ -51,6 +51,7 @@ HEADERS += \
     cherry.h \
     chilipepper.h \
     chomper.h \
+    clover.h \
     flameeffect.h \
     game.h \
     loading.h \
