@@ -104,16 +104,6 @@ void shop::addPlant(QString plantType, QPointF position) {
         }
 
         // 重置阳光生成计时器
-        // 逻辑：消费后下一颗阳光在 0~5 秒内随机出现
-        const int fiveSecondsFrames = int(5.0 * 1000 / 33.0);   // 5 秒对应的帧数
-        int remainFrames = QRandomGenerator::global()->bounded(fiveSecondsFrames + 1);
-        // remainFrames ∈ [0, fiveSecondsFrames]
-
-        // 让 counter 靠近 time，这样下一次触发 = remainFrames 帧后
-        counter = time - remainFrames;
-        if (counter < 0) counter = 0;   // 理论上 5 < 7，不会小于 0，保险起见
-
-        // 如果你还想“消费后立刻也刷新一下界面”，可以加一句：
-        // update();
+        counter = 0;
     }
 }
