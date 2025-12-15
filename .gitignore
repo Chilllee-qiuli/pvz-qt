@@ -1,1 +1,8 @@
+# 构建目录
 build/
+# Qt Creator本地配置文件/目录
+pvz.pro
+pvz.pro.*
+.qtcreator/
+# 项目本地输出目录
+output/
