@@ -44,6 +44,8 @@ void chomper::advance(int phase)
                 if (zom->hp <= 0)
                 {
                     //delete zom;
+                    // 这里简单粗暴直接把delete语句删了，现在还不明确qt会不会自然释放内存
+                    // 但是如果目前不删除，会有非常莫名其妙的bug
                      zom->setMovie(":/new/prefix1/Burn.gif");
                     currentState = STATE_CHEWING;
                     setMovie(":/new/prefix1/ChomperDigest.gif");  // 嚼僵尸状态的动画

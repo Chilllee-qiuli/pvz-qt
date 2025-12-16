@@ -89,5 +89,7 @@
         <file>card_cherrybomb.png</file>
         <file>chilipepperAttack.gif</file>
         <file>jiangshitujian1.png</file>
+        <file>thorn.gif</file>
+        <file>Thorn.png</file>
     </qresource>
 </RCC>

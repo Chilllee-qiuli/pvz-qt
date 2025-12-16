@@ -26,7 +26,7 @@ const QVector<QString> card::name = {
     "Repeater",
     "WallNut",
     "chilipepper",
-    "thorn"
+    "Thorn"
 };
 
 // 定义静态常量向量，存储每种植物的成本
