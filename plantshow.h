@@ -13,6 +13,7 @@
 #include "sunflower.h"
 #include "wallnut.h"
 #include "pea.h"
+#include "thorn.h"
 
 namespace Ui {
 class PlantShow;
@@ -48,6 +49,7 @@ private slots:
 
     void on_pushButton_7_clicked();
 
+    void on_pushButton_thorn_clicked(); // 我与她风格不同，用名字区分的开一点
 private:
     Ui::PlantShow *ui;
     void showPlantInfo(plant* plant, const QString& plantName);

@@ -11,7 +11,8 @@ const QMap<QString, int> card::map = {
     {"PotatoMine", 5},
     {"Repeater", 6},
     {"WallNut", 7},
-    {"chilipepper", 8}
+    {"chilipepper", 8},
+    {"Thorn", 9} // 地刺的索引
 };
 
 // 定义静态常量向量，存储所有植物的名称
@@ -24,14 +25,15 @@ const QVector<QString> card::name = {
     "PotatoMine",
     "Repeater",
     "WallNut",
-    "chilipepper"
+    "chilipepper",
+    "thorn"
 };
 
 // 定义静态常量向量，存储每种植物的成本
-const QVector<int> card::cost = {50, 100, 150, 50, 175, 25, 200, 75, 50};
+const QVector<int> card::cost = {50, 100, 150, 50, 175, 25, 200, 75, 50, 100};
 
 // 定义静态常量向量，存储每种植物卡片的冷却时间
-const QVector<int> card::cool = {227, 227, 606, 100, 227, 606, 227, 227, 100};
+const QVector<int> card::cool = {227, 227, 606, 100, 227, 606, 227, 227, 100, 227};
 
 // 卡片类的构造函数，初始化卡片文本和计数器
 card::card(QString cardText) {

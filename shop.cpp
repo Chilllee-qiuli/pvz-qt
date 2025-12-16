@@ -88,6 +88,7 @@ void shop::addPlant(QString plantType, QPointF position) {
     case 6: newPlant = new repeater; break;
     case 7: newPlant = new wallnut; break;
     case 8: newPlant = new chilipepper; break;
+    case 9: newPlant = new thorn; break;
     }
 
     if (newPlant) {

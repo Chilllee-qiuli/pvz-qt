@@ -3,6 +3,7 @@
 #include <QGraphicsPixmapItem>
 #include "startpage.h"
 
+
 PlantShow::PlantShow(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::PlantShow)
@@ -144,6 +145,12 @@ void PlantShow::on_pushButton_11_clicked()
     delete plant;
 }
 
+void PlantShow::on_pushButton_thorn_clicked() {
+    setupScaledBackground(ui->graphicsView, ":/new/prefix1/Thorn.png", Qt::IgnoreAspectRatio);
+    thorn* plant = new thorn();
+    showPlantInfo(plant, "地刺");
+    delete plant;
+}
 
 void PlantShow::on_pushButton_7_clicked()
 {

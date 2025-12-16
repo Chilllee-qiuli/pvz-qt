@@ -14,6 +14,7 @@
 #include "repeater.h"
 #include "chomper.h"
 #include "chilipepper.h"
+#include "thorn.h"
 
 class shop : public other
 {

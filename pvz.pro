@@ -34,6 +34,7 @@ SOURCES += \
     startpage.cpp \
     sun.cpp \
     sunflower.cpp \
+    thorn.cpp \
     wallnut.cpp \
     zombie.cpp \
     mower.cpp \
@@ -69,6 +70,7 @@ HEADERS += \
     startpage.h \
     sun.h \
     sunflower.h \
+    thorn.h \
     wallnut.h \
     zombie.h \
     mower.h \

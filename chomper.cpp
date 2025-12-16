@@ -43,8 +43,8 @@ void chomper::advance(int phase)
                 zom->hp -= atk;
                 if (zom->hp <= 0)
                 {
-                    delete zom;
-                    // zom->setMovie(":/new/prefix1/Burn.gif");
+                    //delete zom;
+                     zom->setMovie(":/new/prefix1/Burn.gif");
                     currentState = STATE_CHEWING;
                     setMovie(":/new/prefix1/ChomperDigest.gif");  // 嚼僵尸状态的动画
                     chewCounter = 0;
