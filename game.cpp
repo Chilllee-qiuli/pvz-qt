@@ -102,16 +102,10 @@ void game::addZombie()
     };
 
     auto randRow = [&]() { return qrand() % 5; };
-
-    // ========== 运行时状态（static：只在本函数内保存） ==========
     static int elapsedMs = 0;
     elapsedMs += kTickMs;
 
-    // --------------------------------------------------------------------
-    // A) 正常刷怪：永远存在（负责“发育期 + 难度爬坡”）
-    // --------------------------------------------------------------------
     // 思路：用 elapsedMs 计算当前“基础生成间隔 maxtime(帧数)”和“强怪比例”
-    // 你可以随便调这些常量来改手感。
 
     auto spawnNormal = [&]() {
         // 1) 发育保护：前 50 秒非常慢且只出普通（避免开局崩）
@@ -181,11 +175,9 @@ void game::addZombie()
         }
     };
 
-    // --------------------------------------------------------------------
-    // B) 波次刷怪：到点“额外加餐”（不会影响正常刷怪）
-    // --------------------------------------------------------------------
+    // B) 波次刷怪：到点“额外加餐”（区分于正常刷怪）
     // 设计：波次以“触发时间”启动，然后在 duration 内按 burst 节奏喷出 total 只
-    // 这会在正常刷怪基础上叠加，因此就是你要的“辅助波次”。
+    // 这会在正常刷怪基础上叠加
 
     struct Rule { ZType type; int weight; };
     struct WaveCfg {
@@ -205,13 +197,13 @@ void game::addZombie()
         int accMs = 0;
     };
 
-    // 你只需要改这里的表，就能改“旗帜波时间点和强度”
+    // 改这里的表，表示旗帜波时间点和强度
     static const WaveCfg waveCfgs[] = {
         // 触发  ,持续 ,总数,喷发间隔,每次喷几只, 权重...
         // 第一波怪太超模了去掉吧
         { 145000,  7000, 18,   350,     2, { {ZType::Cone,50},{ZType::Bucket,35},{ZType::Basic,15} }, 3 }, // 第一旗帜波
-        { 175000,  8000, 26,   320,     3, { {ZType::Cone,35},{ZType::Bucket,40},{ZType::Screen,15},{ZType::Basic,10} }, 4 },
-        {210000,  9000, 34,   280,     4, { {ZType::Bucket,35},{ZType::Screen,25},{ZType::Football,15},{ZType::Cone,25} }, 4 }, // 大波
+        { 225000,  8000, 26,   320,     3, { {ZType::Cone,35},{ZType::Bucket,40},{ZType::Screen,15},{ZType::Basic,10} }, 4 },
+        { 280000,  9000, 34,   280,     4, { {ZType::Bucket,35},{ZType::Screen,25},{ZType::Football,15},{ZType::Cone,25} }, 4 }, // 大波
         // 继续加：{ triggerMs, durationMs, total, burstEveryMs, burstCount, rules..., ruleCount }
     };
     static const int waveCount = sizeof(waveCfgs) / sizeof(waveCfgs[0]);
@@ -272,8 +264,7 @@ void game::addZombie()
         }
     };
 
-    // ================== 最终执行顺序：正常 + 波次叠加 ==================
-    spawnNormal(); // 基础节奏：发育+爬坡（永远有）
+    spawnNormal(); // 基础节奏：发育+爬坡
     spawnWaves();  // 额外节奏：旗帜波/大波（到点加餐）
 }
 
