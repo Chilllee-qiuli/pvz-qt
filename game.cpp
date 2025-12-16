@@ -209,9 +209,9 @@ void game::addZombie()
     static const WaveCfg waveCfgs[] = {
         // 触发  ,持续 ,总数,喷发间隔,每次喷几只, 权重...
         // 第一波怪太超模了去掉吧
-       // { 45000,  7000, 18,   350,     2, { {ZType::Cone,50},{ZType::Bucket,35},{ZType::Basic,15} }, 3 }, // 第一旗帜波
-        { 75000,  8000, 26,   320,     3, { {ZType::Cone,35},{ZType::Bucket,40},{ZType::Screen,15},{ZType::Basic,10} }, 4 },
-        {110000,  9000, 34,   280,     4, { {ZType::Bucket,35},{ZType::Screen,25},{ZType::Football,15},{ZType::Cone,25} }, 4 }, // 大波
+        { 145000,  7000, 18,   350,     2, { {ZType::Cone,50},{ZType::Bucket,35},{ZType::Basic,15} }, 3 }, // 第一旗帜波
+        { 175000,  8000, 26,   320,     3, { {ZType::Cone,35},{ZType::Bucket,40},{ZType::Screen,15},{ZType::Basic,10} }, 4 },
+        {210000,  9000, 34,   280,     4, { {ZType::Bucket,35},{ZType::Screen,25},{ZType::Football,15},{ZType::Cone,25} }, 4 }, // 大波
         // 继续加：{ triggerMs, durationMs, total, burstEveryMs, burstCount, rules..., ruleCount }
     };
     static const int waveCount = sizeof(waveCfgs) / sizeof(waveCfgs[0]);
