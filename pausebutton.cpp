@@ -6,6 +6,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
+#include "startpage.h"
 
 PauseButton::PauseButton(game* gamePtr)
     : m_gamePtr(gamePtr), m_isHovered(false)
@@ -122,5 +123,11 @@ void PauseDialog::onQuitClicked()
     if (m_gamePtr && m_gamePtr->mQTimer) {
         m_gamePtr->mQTimer->stop();
     }
+    if (m_gamePtr) {
+        m_gamePtr->close(); // 关闭game窗口（会触发析构，释放资源）
+    }
+    // 打开大厅页面
+    startpage* mstartpage = new startpage;
+    mstartpage->show();
     reject();
 }
