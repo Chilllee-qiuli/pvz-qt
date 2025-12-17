@@ -8,6 +8,7 @@ thorn::thorn() {
     damageInterval = 30;    // 伤害间隔（约1秒，33ms/帧 × 30 ≈ 1秒）
     damageCounter = 0;
     setMovie(":/new/prefix1/Thorn.png"); // 使用PNG格式的地刺图片
+    setZValue(1);
 }
 
 // 地刺碰撞范围（覆盖一格地面）

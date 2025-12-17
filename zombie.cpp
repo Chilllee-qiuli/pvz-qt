@@ -9,6 +9,8 @@ zombie::zombie()
     hp=state=atk=0;
     speed=0.0;
     mQMovie=mhead=nullptr;
+    // 统一设置所有僵尸的Z轴层级（高于地刺的1）
+    setZValue(2);
 }
 zombie::~zombie()
 {
