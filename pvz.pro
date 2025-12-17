@@ -14,6 +14,7 @@ SOURCES += \
     cherry.cpp \
     chilipepper.cpp \
     chomper.cpp \
+    flagzombie.cpp \
     flameeffect.cpp \
     game.cpp \
     loading.cpp \
@@ -52,6 +53,7 @@ HEADERS += \
     cherry.h \
     chilipepper.h \
     chomper.h \
+    flagzombie.h \
     flameeffect.h \
     game.h \
     loading.h \

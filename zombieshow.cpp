@@ -93,6 +93,14 @@ void ZombieShow::on_pushButton_potato_clicked()
     delete zombie;
 }
 
+void ZombieShow::on_pushButton_flag_clicked()
+{
+    setupScaledBackground1(ui->graphicsView, ":/new/prefix1/flagzombieshow.png", Qt::IgnoreAspectRatio);
+    FlagZombie* zombie = new FlagZombie();
+    showZombieInfo(zombie, "旗帜僵尸");
+    delete zombie;
+}
+
 
 void ZombieShow::on_pushButton_4_clicked()
 {

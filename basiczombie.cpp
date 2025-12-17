@@ -1,4 +1,5 @@
 #include "basiczombie.h"
+#include "thorn.h"
 
 basiczombie::basiczombie()
 {
@@ -61,7 +62,10 @@ bool basiczombie::checkCollisionWithPlant() const
     QList<QGraphicsItem*> items = collidingItems(Qt::IntersectsItemShape);
     for (auto item : items) {
         if (item->type() == plant::Type) {
-            return true;
+            if (item->type() == plant::Type) {
+                thorn* t = qgraphicsitem_cast<thorn*>(item);
+                if (!t) return true; // 排除地刺
+            }
         }
     }
     return false;
@@ -74,13 +78,15 @@ void basiczombie::attackPlant()
     if (!items.isEmpty()) {
         plant* target = qgraphicsitem_cast<plant*>(items[0]);
         if (target) {
-            target->hp -= atk;
-
-            // 切换到攻击动画
-            if (state != 1) {
-                state = 1;
-                setMovie(":/new/prefix1/ZombieAttack.gif");
+            thorn* t = qgraphicsitem_cast<thorn*>(target);
+            if (!t) { // 排除地刺
+                target->hp -= atk;
+                if (state != 1) {
+                    state = 1;
+                    setMovie(":/new/prefix1/ZombieAttack.gif");
+                }
             }
+
         }
     }
 }

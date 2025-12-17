@@ -8,6 +8,7 @@
 #include "bucketzombie.h"
 #include "screenzombie.h"
 #include "footballzombie.h"
+#include "flagzombie.h"
 #include "zombie.h"
 #include "mower.h"
 #include <QPixmap>
@@ -86,7 +87,7 @@ void game::addZombie()
     constexpr int kTickMs = 33;
 
     // ========== 工具：生成一只指定类型僵尸 ==========
-    enum class ZType { Basic, Cone, Bucket, Screen, Football };
+    enum class ZType { Basic, Cone, Bucket, Screen, Football, Flag };
 
     auto spawnOne = [&](ZType t, int row) {
         zombie* zom = nullptr;
@@ -96,6 +97,7 @@ void game::addZombie()
         case ZType::Bucket:   zom = new BucketZombie;   break;
         case ZType::Screen:   zom = new ScreenZombie;   break;
         case ZType::Football: zom = new FootballZombie; break;
+        case ZType::Flag:      zom = new FlagZombie;      break;
         }
         zom->setPos(1028, 120 + 95 * row);
         scene->addItem(zom);
@@ -108,11 +110,11 @@ void game::addZombie()
     // 思路：用 elapsedMs 计算当前“基础生成间隔 maxtime(帧数)”和“强怪比例”
 
     auto spawnNormal = [&]() {
-        // 1) 发育保护：前 50 秒非常慢且只出普通（避免开局崩）
-        //    之后逐步加速，直到一个下限（别快到离谱）
+        // 发育保护：前 50 秒非常慢且只出普通僵尸
+        //  之后逐步加速，直到一个下限
         const int t = elapsedMs;
 
-        int maxtimeFrames = 0; // “最大间隔”（单位：tick次数）
+        int maxtimeFrames = 0; //最大间隔（单位：tick数）
         if (t < 50000) {
             // 约 8~14 秒一只（250~420 帧）
             maxtimeFrames = 250 + (qrand() % 171);
@@ -131,7 +133,7 @@ void game::addZombie()
             maxtimeFrames = start - reduce;
         }
 
-        // 2) 带随机的实际间隔 timeFrames（防止固定节奏）
+        // 带随机的实际间隔 timeFrames（防止固定节奏）
         //    取 [maxtime/2 , maxtime] 之间
         static int counter = 0;
         static int timeFrames = 0;
@@ -141,7 +143,7 @@ void game::addZombie()
             counter = 0;
             timeFrames = (maxtimeFrames / 2) + (qrand() % (maxtimeFrames - maxtimeFrames / 2 + 1));
 
-            // 3) 正常刷怪类型随时间变硬（但不要太激进）
+            //  正常刷怪类型随时间变硬
             int r = qrand() % 100;
 
             if (t < 50000) {
@@ -175,8 +177,8 @@ void game::addZombie()
         }
     };
 
-    // B) 波次刷怪：到点“额外加餐”（区分于正常刷怪）
-    // 设计：波次以“触发时间”启动，然后在 duration 内按 burst 节奏喷出 total 只
+    //  波次刷怪（区分于正常刷怪）
+    // 设计：波次以触发时间启动，然后在 duration 内按 burst 节奏喷出 total 只
     // 这会在正常刷怪基础上叠加
 
     struct Rule { ZType type; int weight; };
@@ -201,7 +203,7 @@ void game::addZombie()
     static const WaveCfg waveCfgs[] = {
         // 触发  ,持续 ,总数,喷发间隔,每次喷几只, 权重...
         // 第一波怪太超模了去掉吧
-        { 145000,  7000, 18,   350,     2, { {ZType::Cone,50},{ZType::Bucket,35},{ZType::Basic,15} }, 3 }, // 第一旗帜波
+        { 1000,  7000, 18,   350,     2, { {ZType::Cone,50},{ZType::Bucket,35},{ZType::Basic,15} }, 3 }, // 第一旗帜波
         { 225000,  8000, 26,   320,     3, { {ZType::Cone,35},{ZType::Bucket,40},{ZType::Screen,15},{ZType::Basic,10} }, 4 },
         { 280000,  9000, 34,   280,     4, { {ZType::Bucket,35},{ZType::Screen,25},{ZType::Football,15},{ZType::Cone,25} }, 4 }, // 大波
         // 继续加：{ triggerMs, durationMs, total, burstEveryMs, burstCount, rules..., ruleCount }
@@ -236,6 +238,8 @@ void game::addZombie()
                 st.startMs = elapsedMs;
                 st.remain = cfg.total;
                 st.accMs = 0;
+
+                spawnOne(ZType::Flag, randRow()); // 随机选一行生成旗帜僵尸
             }
 
             // 到期或刷完

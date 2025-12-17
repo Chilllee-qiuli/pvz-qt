@@ -1,5 +1,6 @@
 #include "zombie.h"
 #include "plant.h"
+#include "thorn.h"
 
 zombie::zombie()
 {
@@ -96,17 +97,19 @@ int zombie::type() const
     return Type; // 返回僵尸的类型
 }
 
-
-
-
-
 bool zombie::checkCollisionWithPlant() const
 {
     // 获取碰撞项列表并检查是否包含植物
     QList<QGraphicsItem*> items = collidingItems(Qt::IntersectsItemShape);
     for (auto item : items) {
+        // 检查是否是植物类型
         if (item->type() == plant::Type) {
-            return true;
+            // 检查是否是地刺，如果是地刺则不视为阻挡植物
+            thorn* t = qgraphicsitem_cast<thorn*>(item);
+            if (!t) {
+                // 不是地刺，视为阻挡植物
+                return true;
+            }
         }
     }
     return false;
@@ -119,12 +122,16 @@ void zombie::attackPlant()
     if (!items.isEmpty()) {
         plant* target = qgraphicsitem_cast<plant*>(items[0]);
         if (target) {
-            target->hp -= atk;
+            // 检查是否是地刺，如果是地刺则不攻击
+            thorn* t = qgraphicsitem_cast<thorn*>(target);
+            if (!t) {
+                target->hp -= atk;
 
-            // 切换到攻击动画
-            if (state != 1) {
-                state = 1;
-                setMovie(":/new/prefix1/ZombieAttack.gif");
+                // 切换到攻击动画
+                if (state != 1) {
+                    state = 1;
+                    setMovie(":/new/prefix1/ZombieAttack.gif");
+                }
             }
         }
     }
@@ -144,11 +151,8 @@ void zombie::handleDeath()
     return;
 }
 
-
-
 void zombie::moveForward()
 {
     // 更新位置
     setX(x() - speed);
 }
-

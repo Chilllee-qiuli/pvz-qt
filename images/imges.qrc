@@ -91,5 +91,7 @@
         <file>jiangshitujian1.png</file>
         <file>thorn.gif</file>
         <file>Thorn.png</file>
+        <file>FlagZombieWalk.gif</file>
+        <file>flagzombiwshow.png</file>
     </qresource>
 </RCC>

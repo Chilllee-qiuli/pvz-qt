@@ -9,6 +9,7 @@
 #include "conezombie.h"
 #include "footballzombie.h"
 #include "screenzombie.h"
+#include "flagzombie.h"
 
 namespace Ui {
 class ZombieShow;
@@ -36,6 +37,8 @@ private slots:
     void on_pushButton_4_clicked();
 
     void on_pushButton_clicked();
+
+    void on_pushButton_flag_clicked();
 
 private:
     Ui::ZombieShow *ui;
