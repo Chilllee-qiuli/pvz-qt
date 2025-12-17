@@ -103,36 +103,31 @@ bool zombie::checkCollisionWithPlant() const
     QList<QGraphicsItem*> items = collidingItems(Qt::IntersectsItemShape);
     for (auto item : items) {
         // 检查是否是植物类型
-        if (item->type() == plant::Type) {
-            // 检查是否是地刺，如果是地刺则不视为阻挡植物
-            thorn* t = qgraphicsitem_cast<thorn*>(item);
-            if (!t) {
-                // 不是地刺，视为阻挡植物
-                return true;
-            }
+        if (item->type() != plant::Type)continue;
+
+        plant* targetPlant = qgraphicsitem_cast<plant*>(item);
+        if (targetPlant && typeid(*targetPlant) != typeid(thorn)) {
+            return true; // 检测到非地刺植物，返回碰撞
         }
     }
     return false;
 }
 
+// 在 zombie.cpp 中找到 attackPlant() 方法，替换为：
 void zombie::attackPlant()
 {
-    // 获取首个碰撞的植物并造成伤害
     QList<QGraphicsItem*> items = collidingItems();
-    if (!items.isEmpty()) {
-        plant* target = qgraphicsitem_cast<plant*>(items[0]);
-        if (target) {
-            // 检查是否是地刺，如果是地刺则不攻击
-            thorn* t = qgraphicsitem_cast<thorn*>(target);
-            if (!t) {
-                target->hp -= atk;
-
-                // 切换到攻击动画
-                if (state != 1) {
-                    state = 1;
-                    setMovie(":/new/prefix1/ZombieAttack.gif");
-                }
+    for (auto item : items) {
+        plant* target = qgraphicsitem_cast<plant*>(item);
+        // 只攻击非地刺的植物
+        if (target && typeid(*target) != typeid(thorn)) {
+            target->hp -= atk; // 造成伤害
+            // 切换到攻击动画（如果当前不是攻击状态）
+            if (state != 1) {
+                state = 1;
+                setMovie(":/new/prefix1/ZombieAttack.gif"); // 根据僵尸类型调整动画路径
             }
+            return; // 找到第一个目标后攻击，退出循环
         }
     }
 }
