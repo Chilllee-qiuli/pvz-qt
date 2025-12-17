@@ -12,8 +12,11 @@ public:
     int getHp() const override;
     int getAtk() const override;
     qreal getSPD() const override;
+    bool checkCollisionWithPlant() const;
+    void attackPlant();
+    void handleDeath();
+    void moveForward();
 };
-
 
 
 #endif // BUCKETZOMBIE_H

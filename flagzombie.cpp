@@ -1,4 +1,7 @@
 #include "flagzombie.h"
+#include "thorn.h"
+#include "zombieshow.h"
+#include <typeinfo>
 
 FlagZombie::FlagZombie()
 {
@@ -21,8 +24,8 @@ void FlagZombie::advance(int phase)
         if (state < 2)
         {
             state = 2;
-            setMovie(":/new/prefix1/ZombieDie.gif");  // 可共用死亡动画
-            setHead(":/new/prefix1/ZombieHead.gif");
+            // 使用zombieshow统一处理死亡动画
+            ZombieShow::playDeathAnimation(this);
         }
         else if (mQMovie->currentFrameNumber() == mQMovie->frameCount() - 1)
             delete this;
@@ -42,6 +45,63 @@ void FlagZombie::advance(int phase)
     }
 
     moveForward();
+}
+
+bool FlagZombie::checkCollisionWithPlant() const
+{
+    // 获取碰撞项列表并检查是否包含植物
+    QList<QGraphicsItem*> items = collidingItems(Qt::IntersectsItemShape);
+    for (auto item : items) {
+        // 先判断是否为植物类型
+        if (item->type() != plant::Type) {
+            continue;
+        }
+        // 排除地刺（thorn），允许其他植物被检测
+        plant* targetPlant = qgraphicsitem_cast<plant*>(item);
+        if (targetPlant && typeid(*targetPlant) != typeid(thorn)) {
+            return true; // 检测到非地刺植物，返回碰撞
+        }
+    }
+    return false;
+}
+
+void FlagZombie::attackPlant()
+{
+    // 获取首个碰撞的植物并造成伤害
+    QList<QGraphicsItem*> items = collidingItems();
+    if (!items.isEmpty()) {
+        plant* target = qgraphicsitem_cast<plant*>(items[0]);
+        if (target && typeid(*target) != typeid(thorn)) {
+            target->hp -= atk; // 造成伤害
+            // 切换到攻击动画（如果当前不是攻击状态）
+            if (state != 1) {
+                state = 1;
+                // 使用zombieshow统一处理攻击动画
+                ZombieShow::playAttackAnimation(this);
+            }
+            return; // 找到第一个目标后攻击，退出循环
+        }
+    }
+}
+
+void FlagZombie::handleDeath()
+{
+    // 处理僵尸死亡逻辑
+    if (state < 2) {
+        state = 2;  // 设置为死亡状态
+        // 使用zombieshow统一处理死亡动画
+        ZombieShow::playDeathAnimation(this);
+    }
+    else if (mQMovie->currentFrameNumber() == mQMovie->frameCount() - 1) {
+        delete this;        // 动画结束后安全删除
+    }
+    return;
+}
+
+void FlagZombie::moveForward()
+{
+    // 更新位置
+    setX(x() - speed);
 }
 
 int FlagZombie::getHp() const

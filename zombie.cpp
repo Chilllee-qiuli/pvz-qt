@@ -1,6 +1,8 @@
 #include "zombie.h"
 #include "plant.h"
 #include "thorn.h"
+#include "zombieshow.h"
+#include <typeinfo>
 
 zombie::zombie()
 {
@@ -113,7 +115,6 @@ bool zombie::checkCollisionWithPlant() const
     return false;
 }
 
-// 在 zombie.cpp 中找到 attackPlant() 方法，替换为：
 void zombie::attackPlant()
 {
     QList<QGraphicsItem*> items = collidingItems();
@@ -125,7 +126,8 @@ void zombie::attackPlant()
             // 切换到攻击动画（如果当前不是攻击状态）
             if (state != 1) {
                 state = 1;
-                setMovie(":/new/prefix1/ZombieAttack.gif"); // 根据僵尸类型调整动画路径
+                // 使用zombieshow统一处理攻击动画
+                ZombieShow::playAttackAnimation(this);
             }
             return; // 找到第一个目标后攻击，退出循环
         }
@@ -137,8 +139,8 @@ void zombie::handleDeath()
     // 处理僵尸死亡逻辑
     if (state < 2) {
         state = 2;  // 设置为死亡状态
-        setMovie(":/new/prefix1/ZombieDie.gif");
-        setHead(":/new/prefix1/ZombieHead.gif");
+        // 使用zombieshow统一处理死亡动画
+        ZombieShow::playDeathAnimation(this);
     }
     else if (mQMovie->currentFrameNumber() == mQMovie->frameCount() - 1) {
         delete this;        // 动画结束后安全删除

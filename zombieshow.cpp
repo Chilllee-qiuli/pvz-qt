@@ -54,39 +54,98 @@ void setupScaledBackground1(QGraphicsView* view, const QString& imagePath, Qt::A
     }
 }
 
+// 统一处理僵尸攻击动画
+void ZombieShow::playAttackAnimation(zombie* zombie)
+{
+    // 根据僵尸类型播放对应的攻击动画
+    if (typeid(*zombie) == typeid(basiczombie)) {
+        zombie->setMovie(":/new/prefix1/ZombieAttack.gif");
+    }
+    else if (typeid(*zombie) == typeid(ConeZombie)) {
+        zombie->setMovie(":/new/prefix1/ConeZombieAttack.gif");
+    }
+    else if (typeid(*zombie) == typeid(BucketZombie)) {
+        zombie->setMovie(":/new/prefix1/BucketZombieAttack.gif");
+    }
+    else if (typeid(*zombie) == typeid(ScreenZombie)) {
+        // ScreenZombie使用普通攻击动画
+        zombie->setMovie(":/new/prefix1/ScreenZombieAttack.gif");
+    }
+    else if (typeid(*zombie) == typeid(FootballZombie)) {
+        // FootballZombie使用普通攻击动画
+        zombie->setMovie(":/new/prefix1/FootballZombieAttack.gif");
+    }
+    else if (typeid(*zombie) == typeid(FlagZombie)) {
+        // FlagZombie使用普通攻击动画
+        zombie->setMovie(":/new/prefix1/FlagZombieAttack.gif");
+    }
+    else {
+        // 默认攻击动画
+        zombie->setMovie(":/new/prefix1/ZombieAttack.gif");
+    }
+}
+
+// 统一处理僵尸死亡动画
+void ZombieShow::playDeathAnimation(zombie* zombie)
+{
+    // 根据僵尸类型播放对应的死亡动画
+    if (typeid(*zombie) == typeid(basiczombie)) {
+        zombie->setMovie(":/new/prefix1/ZombieDie.gif");
+        zombie->setHead(":/new/prefix1/ZombieHead.gif");
+    }
+    else if (typeid(*zombie) == typeid(ConeZombie)) {
+        zombie->setMovie(":/new/prefix1/ZombieDie.gif");
+        zombie->setHead(":/new/prefix1/ZombieHead.gif");
+    }
+    else if (typeid(*zombie) == typeid(BucketZombie)) {
+        zombie->setMovie(":/new/prefix1/ZombieDie.gif");
+        zombie->setHead(":/new/prefix1/ZombieHead.gif");
+    }
+    else if (typeid(*zombie) == typeid(ScreenZombie)) {
+        zombie->setMovie(":/new/prefix1/ZombieDie.gif");
+        zombie->setHead(":/new/prefix1/ZombieHead.gif");
+    }
+    else if (typeid(*zombie) == typeid(FootballZombie)) {
+        zombie->setMovie(":/new/prefix1/FootballZombieDie.gif");
+        zombie->setHead(":/new/prefix1/ZombieHead.gif");
+    }
+    else if (typeid(*zombie) == typeid(FlagZombie)) {
+        zombie->setMovie(":/new/prefix1/ZombieDie.gif");
+        zombie->setHead(":/new/prefix1/ZombieHead.gif");
+    }
+    else {
+        // 默认死亡动画
+        zombie->setMovie(":/new/prefix1/ZombieDie.gif");
+        zombie->setHead(":/new/prefix1/ZombieHead.gif");
+    }
+}
+
 void ZombieShow::on_pushButton_sunflower_clicked()
 {
-
     setupScaledBackground1(ui->graphicsView, ":/new/prefix1/zombieshow.png", Qt::IgnoreAspectRatio);
     basiczombie* zombie = new basiczombie();
     showZombieInfo(zombie, "普通僵尸");
     delete zombie;
 }
 
-
 void ZombieShow::on_pushButton_nullwall_clicked()
 {
-
     setupScaledBackground1(ui->graphicsView, ":/new/prefix1/ConeheadZombieshow.png", Qt::IgnoreAspectRatio);
     ConeZombie* zombie = new ConeZombie();
     showZombieInfo(zombie, "路障僵尸");
     delete zombie;
 }
 
-
 void ZombieShow::on_pushButton_peashooter_clicked()
 {
-
     setupScaledBackground1(ui->graphicsView, ":/new/prefix1/footballshow.png", Qt::IgnoreAspectRatio);
     FootballZombie* zombie = new FootballZombie();
     showZombieInfo(zombie, "足球僵尸");
     delete zombie;
 }
 
-
 void ZombieShow::on_pushButton_potato_clicked()
 {
-
     setupScaledBackground1(ui->graphicsView, ":/new/prefix1/BucketheadZombie.png", Qt::IgnoreAspectRatio);
     BucketZombie* zombie = new BucketZombie();
     showZombieInfo(zombie, "铁桶僵尸");
@@ -101,16 +160,13 @@ void ZombieShow::on_pushButton_flag_clicked()
     delete zombie;
 }
 
-
 void ZombieShow::on_pushButton_4_clicked()
 {
-
     setupScaledBackground1(ui->graphicsView, ":/new/prefix1/screenzshow.png", Qt::IgnoreAspectRatio);
     ScreenZombie* zombie = new ScreenZombie();
     showZombieInfo(zombie, "铁丝网僵尸");
     delete zombie;
 }
-
 
 void ZombieShow::on_pushButton_clicked()
 {
@@ -118,5 +174,3 @@ void ZombieShow::on_pushButton_clicked()
     mstartpage->show(); // 显示开始页面
     this->hide(); // 隐藏当前窗口
 }
-
-

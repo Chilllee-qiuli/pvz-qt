@@ -28,10 +28,10 @@ public:
     virtual int getHp() const = 0;
     virtual int getAtk() const = 0;
     virtual qreal getSPD() const = 0;
-    bool checkCollisionWithPlant() const;
-    void attackPlant();
-    void handleDeath();
-    void moveForward();
+    virtual bool checkCollisionWithPlant() const;
+    virtual void attackPlant();
+    virtual void handleDeath();
+    virtual void moveForward();
 
 };
 
