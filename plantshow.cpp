@@ -2,6 +2,7 @@
 #include "ui_plantshow.h"
 #include <QGraphicsPixmapItem>
 #include "startpage.h"
+#include <QFile>
 
 // #include "peashot.h"
 // #include "sunflower.h"
@@ -111,6 +112,10 @@
 
 
 PlantShow::PlantShow(QWidget *parent): QDialog(parent), ui(new Ui::PlantShow){
+    QFile f(":/plant_book.qss");
+    if (f.open(QIODevice::ReadOnly)) {
+        this->setStyleSheet(QString::fromUtf8(f.readAll()));
+    }
     ui->setupUi(this);
     setStyleSheet(R"(
         PlantShow {

@@ -17,6 +17,7 @@ SOURCES += \
     chomper.cpp \
     flagzombie.cpp \
     flameeffect.cpp \
+    flow_layout.cpp \
     game.cpp \
     loading.cpp \
     main.cpp \
@@ -26,6 +27,9 @@ SOURCES += \
     pea.cpp \
     peashot.cpp \
     plant.cpp \
+    plant_book_dialog.cpp \
+    plant_card_widget.cpp \
+    plant_registry.cpp \
     plantselectionwidget.cpp \
     plantshow.cpp \
     potato.cpp \
@@ -57,6 +61,7 @@ HEADERS += \
     chomper.h \
     flagzombie.h \
     flameeffect.h \
+    flow_layout.h \
     game.h \
     loading.h \
     map.h \
@@ -64,6 +69,10 @@ HEADERS += \
     pea.h \
     peashot.h \
     plant.h \
+    plant_book.qss \
+    plant_book_dialog.h \
+    plant_card_widget.h \
+    plant_registry.h \
     plantselectionwidget.h \
     plantshow.h \
     potato.h \
@@ -97,5 +106,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     images/imges.qrc \
+    resources.qrc \
     sound/sound.qrc
-    resources.qrc  # 确保包含资源文件
+     # resources.qrc # 确保包含资源文件

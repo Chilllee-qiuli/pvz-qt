@@ -1,0 +1,110 @@
+/* ====== 根窗口背景（用 border-image 才能拉伸铺满） ====== */
+QDialog#PlantBookDialog {
+    border-image: url(:/new/prefix1/plant_bg.png) 0 0 0 0 stretch stretch;
+    font-family: "Microsoft YaHei";
+}
+
+/* ====== 顶部标题木条 ====== */
+QFrame#HeaderBar {
+    background-color: #6F3215;
+border: 3px solid #D7A874;
+    border-radius: 10px;
+}
+QLabel#HeaderTitle {
+color: #F2C04B;
+font: 900 24px "SimHei";
+}
+
+/* ====== 左侧卡片区（透明，让背景露出来） ====== */
+QScrollArea#CardScroll {
+background: transparent;
+border: none;
+}
+QWidget#CardPane {
+background: transparent;
+}
+
+/* ====== 卡片控件（自定义类 PlantCardWidget） ====== */
+PlantCardWidget {
+    border-image: url(:/new/prefix1/Card.png) 0 0 0 0 stretch stretch;
+    background: transparent;
+}
+
+PlantCardWidget:hover {
+    background-color: rgba(255, 255, 255, 220);
+}
+PlantCardWidget[checked="true"] {
+border: 3px solid #3CB7FF;
+    background-color: rgba(255, 255, 255, 235);
+}
+PlantCardWidget[locked="true"] {
+    background-color: rgba(120, 120, 120, 140);
+border: 2px solid rgba(70, 70, 70, 200);
+}
+QLabel#CardCost {
+color: white;
+    background-color: rgba(0, 0, 0, 130);
+    border-radius: 9px;
+padding: 1px 6px;
+font: 800 12px "Microsoft YaHei";
+}
+
+/* ====== 右侧详情木框 ====== */
+QFrame#DetailOuter {
+    background-color: #5E280B;
+border: 3px solid #2D1306;
+    border-radius: 18px;
+}
+QFrame#DetailInner {
+    background-color: #FFCE99;
+border: 2px solid #9A6B3A;
+    border-radius: 14px;
+}
+
+/* 详情图区域（绿色草地框） */
+QFrame#PortraitFrame {
+    background-color: #1C9D2A;
+border: 2px solid #0B5B12;
+    border-radius: 12px;
+}
+QLabel#PlantName {
+color: white;
+    background-color: #6F3215;
+    border-radius: 10px;
+padding: 6px 10px;
+font: 900 22px "SimHei";
+}
+
+/* ====== 右侧“简介/装扮”竖向 Tab（贴近你图右侧按钮） ====== */
+QTabWidget::pane {
+border: none;
+background: transparent;
+}
+QTabBar::tab {
+    background-color: #C35B25;
+color: #FFD39C;
+padding: 10px 8px;
+margin: 6px 0px;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+    min-width: 26px;
+}
+QTabBar::tab:selected {
+    background-color: #8A3C18;
+color: white;
+}
+
+/* ====== 底部按钮 ====== */
+QPushButton#BottomBtn {
+    background-color: #E0B07A;
+border: 2px solid #9A6B3A;
+    border-radius: 10px;
+padding: 6px 14px;
+font: 800 14px "Microsoft YaHei";
+}
+QPushButton#BottomBtn:hover {
+    background-color: #F0C58C;
+}
+QPushButton#BottomBtn:pressed {
+    background-color: #D9A96E;
+}

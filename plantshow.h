@@ -21,6 +21,8 @@
 #include <QLabel>
 #include <QFormLayout>
 
+#include <QDialog>
+#include <QString>
 
 // 植物图鉴数据模型
 struct PlantInfo {
@@ -42,7 +44,8 @@ private:
     // 数据模型
     QStandardItemModel *m_plantModel;  // 管理植物列表数据
     QList<PlantInfo> m_allPlantInfos;  // 存储所有植物的图鉴数据
-    void showPlant(const QString& plantClassName, const QString& imagePath, const QString& plantName);
+
+
 
     // UI 控件（需在 UI 文件中关联，或代码创建）
     QComboBox *m_categoryBox;    // 分类筛选框
@@ -93,6 +96,7 @@ private slots:
 
     void on_pushButton_7_clicked();
 
+    void showPlant(const QString& plantClassName, const QString& imagePath, const QString& plantName);
     void on_pushButton_thorn_clicked(); // 我与她风格不同，用名字区分的开一点
 private:
     Ui::PlantShow *ui;
