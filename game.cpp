@@ -17,12 +17,12 @@
 
 
 game::game(QWidget *parent)
-    : QWidget{parent}
+    : QWidget{parent}, elapsedMs(0)  // 初始化elapsedMs为0
 {
     // mQSound=new QSound(":/new/prefix2/Grazy.wav");
     // mQSound->play();
 
-     mQTimer=new QTimer(this);
+    mQTimer=new QTimer(this);
 
     scene=new QGraphicsScene(this);
     scene->setSceneRect(150,0,900,600);//控制img需要截取部分
@@ -83,6 +83,11 @@ game::~game()
     delete scene;
 }
 
+void game::resetGameTime()
+{
+    elapsedMs = 0;  // 重置游戏时间计数器
+}
+
 void game::addZombie()
 {
     // 假设外部 QTimer 每 33ms 调一次
@@ -106,7 +111,6 @@ void game::addZombie()
     };
 
     auto randRow = [&]() { return qrand() % 5; };
-    static int elapsedMs = 0;
     elapsedMs += kTickMs;
 
     // 思路：用 elapsedMs 计算当前“基础生成间隔 maxtime(帧数)”和“强怪比例”

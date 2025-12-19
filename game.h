@@ -21,12 +21,14 @@ public:
     QGraphicsScene* scene;
     PauseButton* pauseBtn;
     double mScaleFactor;
+    int elapsedMs;  // 将elapsedMs作为类成员变量
     explicit game(QWidget *parent = nullptr);
     ~game() override;
     void addZombie();
     void check();
     void playBgm(const QString& resPath);
     void stopBgm();
+    void resetGameTime();  // 添加重置游戏时间的方法
 private:
     QMediaPlayer* bgmPlayer = nullptr;
     QMediaPlaylist* bgmPlaylist = nullptr; // 新增播放列表
