@@ -3,6 +3,7 @@
 #include <QPushButton>
 #include "game.h"
 #include "plantshow.h"
+#include "bgmmanager.h"
 #include "zombieshow.h"
 startpage::startpage(QWidget *parent)
     : QWidget{parent}
@@ -62,6 +63,7 @@ startpage::startpage(QWidget *parent)
      // 连接按钮点击事件，启动游戏窗口，并隐藏当前窗口
     connect(btn_1,&QPushButton::clicked,[this](){
         game* ga=new game;
+        BgmManager::instance().play("qrc:/new/prefix2/UraniwaNi.wav"); // 换成你的战斗音乐资源路径
         ga->show();
         this->hide();
     });

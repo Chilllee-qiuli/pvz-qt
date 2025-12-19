@@ -16,6 +16,7 @@
         <file>sound.qrc</file>
         <file>Sun.wav</file>
         <file>Grazy.wav</file>
+        <file>UraniwaNi.wav</file>
     </qresource>
     <qresource prefix="/">
         <file>Grazy.wav</file>

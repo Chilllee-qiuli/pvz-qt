@@ -1,5 +1,6 @@
 #include "Mainwindow.h"
 #include "ui_Mainwindow.h"
+#include "bgmmanager.h"
 #include "loading.h"
 #include <QGuiApplication>
 #include <QScreen>
@@ -9,6 +10,9 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    // 进入主界面就播放菜单BGM（Grazy）
+    BgmManager::instance().play("qrc:/new/prefix2/Grazy.wav");
+
     
     // 计算缩放因子：基于屏幕分辨率与1080p的比例
     QScreen* screen = QGuiApplication::primaryScreen();

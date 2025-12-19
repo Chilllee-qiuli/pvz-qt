@@ -19,9 +19,11 @@
 game::game(QWidget *parent)
     : QWidget{parent}
 {
-    mQSound=new QSound(":/new/prefix2/Grazy.wav");
-    mQSound->play();
-    mQTimer=new QTimer(this);
+    // mQSound=new QSound(":/new/prefix2/Grazy.wav");
+    // mQSound->play();
+
+     mQTimer=new QTimer(this);
+
 
     scene=new QGraphicsScene(this);
     scene->setSceneRect(150,0,900,600);//控制img需要截取部分
@@ -75,6 +77,7 @@ game::game(QWidget *parent)
 }
 game::~game()
 {
+    stopBgm();    // ✅加这一行：销毁时确保停歌
     delete mQSound;
     delete mQTimer;
     delete view;
@@ -203,7 +206,7 @@ void game::addZombie()
     static const WaveCfg waveCfgs[] = {
         // 触发  ,持续 ,总数,喷发间隔,每次喷几只, 权重...
         // 第一波怪太超模了去掉吧
-        { 1000,  7000, 18,   350,     2, { {ZType::Cone,50},{ZType::Bucket,35},{ZType::Basic,15} }, 3 }, // 第一旗帜波
+        { 100000,  7000, 18,   350,     2, { {ZType::Cone,50},{ZType::Bucket,35},{ZType::Basic,15} }, 3 }, // 第一旗帜波
         { 225000,  8000, 26,   320,     3, { {ZType::Cone,35},{ZType::Bucket,40},{ZType::Screen,15},{ZType::Basic,10} }, 4 },
         { 280000,  9000, 34,   280,     4, { {ZType::Bucket,35},{ZType::Screen,25},{ZType::Football,15},{ZType::Cone,25} }, 4 }, // 大波
         // 继续加：{ triggerMs, durationMs, total, burstEveryMs, burstCount, rules..., ruleCount }
@@ -270,6 +273,36 @@ void game::addZombie()
 
     spawnNormal(); // 基础节奏：发育+爬坡
     spawnWaves();  // 额外节奏：旗帜波/大波（到点加餐）
+}
+
+void game::playBgm(const QString& resPath)
+{
+    // 初始化播放器和播放列表
+    if (!bgmPlayer) {
+        bgmPlayer = new QMediaPlayer(this);
+        bgmPlaylist = new QMediaPlaylist(this);
+        // 设置播放模式为循环
+        bgmPlaylist->setPlaybackMode(QMediaPlaylist::Loop);
+        bgmPlayer->setPlaylist(bgmPlaylist);
+    }
+
+    // 停止当前播放
+    bgmPlayer->stop();
+    bgmPlaylist->clear();
+
+    // 添加音乐文件到播放列表（注意资源路径格式）
+    QUrl url(resPath); // 直接使用传入的资源路径，无需添加qrc前缀
+    if (url.isValid()) {
+        bgmPlaylist->addMedia(url);
+        bgmPlayer->play(); // 开始播放
+    } else {
+        qWarning() << "无效的音乐资源路径:" << resPath;
+    }
+}
+
+void game::stopBgm()
+{
+    if (bgmPlayer) bgmPlayer->stop();
 }
 
 

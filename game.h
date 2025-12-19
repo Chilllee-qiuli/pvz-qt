@@ -6,6 +6,8 @@
 #include <QGraphicsScene>
 #include <QTimer>
 #include <QSound>
+#include <QMediaPlayer>
+#include <QMediaPlaylist>
 
 class PauseButton; // 前向声明
 
@@ -23,7 +25,11 @@ public:
     ~game() override;
     void addZombie();
     void check();
-
+    void playBgm(const QString& resPath);
+    void stopBgm();
+private:
+    QMediaPlayer* bgmPlayer = nullptr;
+    QMediaPlaylist* bgmPlaylist = nullptr; // 新增播放列表
 signals:
 
 };

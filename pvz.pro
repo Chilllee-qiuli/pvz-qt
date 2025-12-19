@@ -10,6 +10,7 @@ CONFIG += c++17
 
 SOURCES += \
     basiczombie.cpp \
+    bgmmanager.cpp \
     card.cpp \
     cherry.cpp \
     chilipepper.cpp \
@@ -49,6 +50,7 @@ SOURCES += \
 HEADERS += \
     Mainwindow.h \
     basiczombie.h \
+    bgmmanager.h \
     card.h \
     cherry.h \
     chilipepper.h \
@@ -96,3 +98,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 RESOURCES += \
     images/imges.qrc \
     sound/sound.qrc
+    resources.qrc  # 确保包含资源文件
