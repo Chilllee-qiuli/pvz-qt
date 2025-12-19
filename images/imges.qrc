@@ -93,5 +93,6 @@
         <file>Thorn.png</file>
         <file>FlagZombieWalk.gif</file>
         <file>flagzombiwshow.png</file>
+        <file>plant_bg.png</file>
     </qresource>
 </RCC>
