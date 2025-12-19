@@ -168,7 +168,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>30</y>
+     <y>20</y>
      <width>62</width>
      <height>34</height>
     </rect>

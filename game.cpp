@@ -24,7 +24,6 @@ game::game(QWidget *parent)
 
      mQTimer=new QTimer(this);
 
-
     scene=new QGraphicsScene(this);
     scene->setSceneRect(150,0,900,600);//控制img需要截取部分
     scene->setItemIndexMethod(QGraphicsScene::NoIndex);
