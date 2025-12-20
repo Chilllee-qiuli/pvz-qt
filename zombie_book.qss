@@ -1,0 +1,100 @@
+/* 一个轻量的默认皮肤：如果你已有 plant_book.qss，也可以直接把 ZombieBookDialog::applyQss 改成加载 plant_book.qss */
+
+#ZombieBookDialog {
+    background: #2b2b2b;
+}
+
+#HeaderBar {
+    background: #3a3a3a;
+    border-radius: 10px;
+}
+
+#HeaderTitle {
+    color: white;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+#CardScroll {
+    background: transparent;
+    border: none;
+}
+
+#CardPane {
+    background: transparent;
+}
+
+ZombieCardWidget {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 10px;
+}
+
+ZombieCardWidget[checked="true"] {
+    border: 2px solid rgba(255,255,255,0.55);
+    background: rgba(255,255,255,0.10);
+}
+
+ZombieCardWidget[locked="true"] {
+    opacity: 0.35;
+}
+
+#CardTag {
+    color: white;
+    font-weight: 600;
+}
+
+#DetailOuter {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 14px;
+}
+
+#DetailInner {
+    background: rgba(0,0,0,0.10);
+    border-radius: 12px;
+}
+
+#PortraitFrame {
+    background: rgba(0,0,0,0.18);
+    border-radius: 12px;
+}
+
+#ZombieName {
+    color: white;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+QTabWidget::pane {
+    border: none;
+}
+
+QTabBar::tab {
+    padding: 8px 10px;
+    color: white;
+    background: rgba(255,255,255,0.06);
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    margin: 2px;
+}
+
+QTabBar::tab:selected {
+    background: rgba(255,255,255,0.12);
+}
+
+QTextBrowser {
+    background: transparent;
+    color: white;
+}
+
+#BottomBtn {
+    padding: 8px 16px;
+    border-radius: 10px;
+    color: white;
+    background: rgba(255,255,255,0.10);
+}
+
+#BottomBtn:hover {
+    background: rgba(255,255,255,0.18);
+}

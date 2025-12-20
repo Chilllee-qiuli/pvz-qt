@@ -2,5 +2,6 @@
     <qresource prefix="/new/prefix1"/>
     <qresource prefix="/">
         <file>plant_book.qss</file>
+        <file>zombie_book.qss</file>
     </qresource>
 </RCC>

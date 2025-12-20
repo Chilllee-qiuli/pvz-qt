@@ -4,7 +4,7 @@
 
 thorn::thorn() {
     hp = 10000; // 地刺应该是没有血量这个概念的，但为了兼容现有系统保留
-    atk = 20;               // 每次伤害值（原版游戏中地刺每次造成20点伤害）
+    atk = 100;               // 每次伤害值（原版游戏中地刺每次造成20点伤害）
     damageInterval = 30;    // 伤害间隔（约1秒，33ms/帧 × 30 ≈ 1秒）
     damageCounter = 0;
     setMovie(":/new/prefix1/Thorn.png"); // 使用PNG格式的地刺图片

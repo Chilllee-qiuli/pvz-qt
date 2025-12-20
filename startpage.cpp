@@ -4,9 +4,11 @@
 #include "game.h"
 #include "plantshow.h"
 #include "bgmmanager.h"
-#include "zombieshow.h"
+ // #include "zombieshow.h"
 #include "plant_book_dialog.h"
 #include "plant_registry.h"
+#include "zombie_book_dialog.h"
+#include "zombie_registry.h"
 
 
 static void ensurePlantRegistryInited() {
@@ -136,6 +138,100 @@ static void ensurePlantRegistryInited() {
     });
 
 }
+
+static void ensureZombieRegistryInited() {
+    static bool inited = false;
+    if (inited) return;
+    inited = true;
+
+    auto &r = ZombieRegistry::instance();
+
+    // 1) 普通僵尸
+    r.registerZombie(ZombieMeta{
+        "basic",
+        "普通僵尸",
+        ":/new/prefix1/ZombieWalk1.gif",
+        ":/new/prefix1/ZombieWalk1.gif",
+        270,
+        100 * 33 / 1000,
+        30.0 * 33 / 1000,
+        "最基础的僵尸。",
+        true,
+        nullptr
+    });
+
+    // 2) 路障僵尸
+    r.registerZombie(ZombieMeta{
+        "cone",
+        "路障僵尸",
+        ":/new/prefix1/ConeZombieWalk.gif",
+        ":/new/prefix1/ConeZombieWalk.gif",
+        640,
+        100 * 33 / 1000,
+        120.0 * 33 / 1000 / 4.7,
+        "戴着路障，韧性更高。",
+        true,
+        nullptr
+    });
+
+    // 3) 旗帜僵尸
+    r.registerZombie(ZombieMeta{
+        "flag",
+        "旗帜僵尸",
+        ":/new/prefix1/FlagZombieWalk.gif",
+        ":/new/prefix1/FlagZombieWalk.gif",
+        270,
+        100 * 33 / 1000,
+        30.0 * 33 / 1000,
+        "往往意味着新一波僵尸来了。",
+        true,
+        nullptr
+    });
+
+    // 4) 铁门僵尸（ScreenZombie）
+    r.registerZombie(ZombieMeta{
+        "screen",
+        "铁门僵尸",
+        ":/new/prefix1/ScreenZombieWalk.gif",
+        ":/new/prefix1/ScreenZombieWalk.gif",
+        1370,
+        100 * 33 / 1000,
+        120.0 * 33 / 1000 / 4.7,
+        "举着铁门，防护很强。",
+        true,
+        nullptr
+    });
+
+    // 5) 橄榄球僵尸
+    r.registerZombie(ZombieMeta{
+        "football",
+        "橄榄球僵尸",
+        ":/new/prefix1/FootballZombieWalk.gif",
+        ":/new/prefix1/FootballZombieWalk.gif",
+        1670,
+        100 * 33 / 1000,
+        120.0 * 33 / 1000 / 2.5,
+        "又肉又快的冲锋手。",
+        true,
+        nullptr
+    });
+    // 6) 铁桶僵尸（bucketzombie.cpp）
+    r.registerZombie(ZombieMeta{
+        "bucket",
+        "铁桶僵尸",
+        ":/new/prefix1/BucketZombieWalk.gif",
+        ":/new/prefix1/BucketZombieWalk.gif",
+        1370,
+        100 * 33 / 1000,
+        120.0 * 33 / 1000 / 4.7,
+        "戴着铁桶，防御更高（目前数值与铁门僵尸一致）。",
+        true,
+        nullptr
+    });
+
+}
+
+
 startpage::startpage(QWidget *parent)
     : QWidget{parent}
 {
@@ -236,8 +332,21 @@ startpage::startpage(QWidget *parent)
     });
 
     connect(btn_2,&QPushButton::clicked,[this](){
-        ZombieShow* zs = new ZombieShow;
-        zs->show();
+        // ZombieShow* zs = new ZombieShow;
+        // zs->show();
+        // this->hide();
+        ensureZombieRegistryInited();
+        auto *dlg = new ZombieBookDialog(this);
+        dlg->setAttribute(Qt::WA_DeleteOnClose);
+
+        connect(dlg, &ZombieBookDialog::requestBackToStart, this, [this]() {
+            this->show();
+        });
+        connect(dlg, &QObject::destroyed, this, [this]() {
+            this->show();
+        });
+
+        dlg->show();
         this->hide();
     });
 

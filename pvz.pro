@@ -48,6 +48,9 @@ SOURCES += \
     conezombie.cpp \
     footballzombie.cpp \
     screenzombie.cpp \
+    zombie_book_dialog.cpp \
+    zombie_card_widget.cpp \
+    zombie_registry.cpp \
     zombieshow.cpp \
     pausebutton.cpp
 
@@ -91,6 +94,9 @@ HEADERS += \
     conezombie.h \
     footballzombie.h \
     screenzombie.h \
+    zombie_book_dialog.h \
+    zombie_card_widget.h \
+    zombie_registry.h \
     zombieshow.h \
     pausebutton.h
 
@@ -109,3 +115,6 @@ RESOURCES += \
     resources.qrc \
     sound/sound.qrc
      # resources.qrc # 确保包含资源文件
+
+DISTFILES += \
+    zombie_book.qss
