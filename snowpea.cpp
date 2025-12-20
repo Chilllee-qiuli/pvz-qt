@@ -4,7 +4,7 @@
 
 snowpea::snowpea()
 {
-    atk = 25;
+    atk = 40;
     hp = 300;
     time = int(1.4 * 1000 / 33);
     setMovie(":/new/prefix1/SnowPea.gif");

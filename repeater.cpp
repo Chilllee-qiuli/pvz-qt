@@ -1,8 +1,8 @@
-#include "repeater.h"
+ #include "repeater.h"
 
 repeater::repeater()
 {
-    atk = 25;
+    atk = 50;
     hp = 300;
     time = int(1.4 * 1000 / 33);
     setMovie(":/new/prefix1/Repeater.gif");

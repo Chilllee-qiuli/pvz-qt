@@ -4,7 +4,7 @@
 #include "game.h"
 #include "plantshow.h"
 #include "bgmmanager.h"
- // #include "zombieshow.h"
+#include "zombieshow.h"
 #include "plant_book_dialog.h"
 #include "plant_registry.h"
 #include "zombie_book_dialog.h"
@@ -136,6 +136,37 @@ static void ensurePlantRegistryInited() {
         true,
         nullptr
     });
+    // 9) 寒冰射手（snowpea）
+    r.registerPlant(PlantMeta{
+        "snowpea",
+        "寒冰射手",
+        ":/new/prefix1/SnowPea.gif",
+        ":/new/prefix1/SnowPea.gif",
+        300,                              // snowpea.cpp: hp = 300
+        25,                               // snowpea.cpp: atk = 25
+        175,                              // cost（建议值：原版 175）
+        7.5,                              // cooldown
+        "发射寒冰豌豆，命中后减速僵尸。",
+        true,
+        nullptr
+    });
+
+    // 10) 双发射手（repeater）
+    r.registerPlant(PlantMeta{
+        "repeater",
+        "双发射手",
+        ":/new/prefix1/Repeater.gif",
+        ":/new/prefix1/Repeater.gif",
+        300,                              // repeater.cpp: hp = 300
+        25,                               // repeater.cpp: atk = 25
+        200,                              // cost（建议值：原版 200）
+        7.5,                              // cooldown
+        "一次发射两颗豌豆，火力更强。",
+        true,
+        nullptr
+    });
+
+
 
 }
 
@@ -146,7 +177,7 @@ static void ensureZombieRegistryInited() {
 
     auto &r = ZombieRegistry::instance();
 
-    // 1) 普通僵尸
+    // 1) 普通僵尸（basiczombie.cpp）
     r.registerZombie(ZombieMeta{
         "basic",
         "普通僵尸",
@@ -160,7 +191,7 @@ static void ensureZombieRegistryInited() {
         nullptr
     });
 
-    // 2) 路障僵尸
+    // 2) 路障僵尸（conezombie.cpp）
     r.registerZombie(ZombieMeta{
         "cone",
         "路障僵尸",
@@ -174,7 +205,7 @@ static void ensureZombieRegistryInited() {
         nullptr
     });
 
-    // 3) 旗帜僵尸
+    // 3) 旗帜僵尸（flagzombie.cpp）
     r.registerZombie(ZombieMeta{
         "flag",
         "旗帜僵尸",
@@ -188,7 +219,7 @@ static void ensureZombieRegistryInited() {
         nullptr
     });
 
-    // 4) 铁门僵尸（ScreenZombie）
+    // 4) 铁门僵尸（screenzombie.cpp）
     r.registerZombie(ZombieMeta{
         "screen",
         "铁门僵尸",
@@ -202,7 +233,7 @@ static void ensureZombieRegistryInited() {
         nullptr
     });
 
-    // 5) 橄榄球僵尸
+    // 5) 橄榄球僵尸（footballzombie.cpp）
     r.registerZombie(ZombieMeta{
         "football",
         "橄榄球僵尸",
@@ -215,7 +246,8 @@ static void ensureZombieRegistryInited() {
         true,
         nullptr
     });
-    // 6) 铁桶僵尸（bucketzombie.cpp）
+
+    // 6) 铁桶僵尸（bucketzombie.cpp）✅ 你新加的
     r.registerZombie(ZombieMeta{
         "bucket",
         "铁桶僵尸",
@@ -228,11 +260,10 @@ static void ensureZombieRegistryInited() {
         true,
         nullptr
     });
-
 }
 
-
 startpage::startpage(QWidget *parent)
+
     : QWidget{parent}
 {
     this->resize(900,600);
@@ -332,16 +363,16 @@ startpage::startpage(QWidget *parent)
     });
 
     connect(btn_2,&QPushButton::clicked,[this](){
-        // ZombieShow* zs = new ZombieShow;
-        // zs->show();
-        // this->hide();
         ensureZombieRegistryInited();
         auto *dlg = new ZombieBookDialog(this);
         dlg->setAttribute(Qt::WA_DeleteOnClose);
 
+        // ✅ 图鉴请求返回主界面
         connect(dlg, &ZombieBookDialog::requestBackToStart, this, [this]() {
             this->show();
         });
+
+        // ✅ 无论用按钮关、点右上角 X 关，都能回主界面
         connect(dlg, &QObject::destroyed, this, [this]() {
             this->show();
         });
