@@ -22,6 +22,9 @@ public:
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
     // shop * sh;
+private:
+    bool mDidDrag = false;
+
 };
 
 

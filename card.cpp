@@ -1,5 +1,5 @@
 #include "card.h"
-#include "shop.h"
+//#include "shop.h"
 
 // 定义静态常量映射，存储植物名称和对应的索引
 const QMap<QString, int> card::map = {
@@ -73,13 +73,40 @@ void card::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWid
         painter->drawRect(QRectF(-48, -68, 98, 132 * (1 - qreal(counter) / cool[map[text]])));
     }
     else {
-        shop *sh = qgraphicsitem_cast<shop *>(scene()->items(QPointF(300, 15))[0]);
-        if(sh->sunnum < cost[map[text]]){
+        shop* sh = qgraphicsitem_cast<shop*>(parentItem());
+        if (sh && sh->sunnum < cost[map[text]]) {
             QBrush maskBrush(QColor(0, 0, 0, 200));
             painter->setBrush(maskBrush);
             painter->drawRect(QRectF(-48, -68, 98, 132));
         }
 
+    }
+    shop* sh = qgraphicsitem_cast<shop*>(parentItem());
+    if (sh && sh->selectedPlant() == text) {
+        QPen pen(QColor(255, 255, 0, 220));
+        pen.setWidth(4);
+        painter->setPen(pen);
+        painter->setBrush(Qt::NoBrush);
+        painter->drawRect(QRectF(-48, -68, 98, 132));
+    }
+    else {
+        shop* sh = qgraphicsitem_cast<shop*>(parentItem());
+        if (sh && sh->sunnum < cost[map[text]]) {
+            QBrush maskBrush(QColor(0, 0, 0, 200));
+            painter->setBrush(maskBrush);
+            painter->drawRect(QRectF(-48, -68, 98, 132));
+        }
+    }
+
+    // ✅选中态高亮（点卡片后显示边框）
+    if (shop* sh = qgraphicsitem_cast<shop*>(parentItem())) {
+        if (sh->selectedPlant() == text) {
+            painter->setBrush(Qt::NoBrush);
+            QPen pen(QColor(255, 255, 0, 230));
+            pen.setWidth(6);
+            painter->setPen(pen);
+            painter->drawRect(QRectF(-48, -68, 98, 132));
+        }
     }
 }
 
@@ -95,26 +122,37 @@ void card::advance(int phase) {
 }
 
 // 重写鼠标按下事件处理函数
-void card::mousePressEvent(QGraphicsSceneMouseEvent* event) {
-    // 如果卡片处于冷却状态或者阳光不足，拒绝事件
-    if (counter < cool[map[text]] || cost[map[text]] > qgraphicsitem_cast<shop*>(parentItem())->sunnum) {
+void card::mousePressEvent(QGraphicsSceneMouseEvent* event)
+{
+    mDidDrag = false;  // ✅每次按下都重置
+    shop* sh = qgraphicsitem_cast<shop*>(parentItem());
+    if (!sh) { event->setAccepted(false); return; }
+
+    if (counter < cool[map[text]] || cost[map[text]] > sh->sunnum) {
         event->setAccepted(false);
+        return;
     }
     setCursor(Qt::ArrowCursor);
+    event->accept();  // ✅确保后续 move/release 能正常到达
 }
 
+
+
 // 重写鼠标移动事件处理函数，处理卡片的拖拽操作
-void card::mouseMoveEvent(QGraphicsSceneMouseEvent* event) {
-    // 检查鼠标移动距离是否超过系统设定的拖拽阈值
-    if (QLineF(event->screenPos(), event->buttonDownScreenPos(Qt::LeftButton)).length() < QApplication::startDragDistance()) {
+void card::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
+{
+    if (mDidDrag) return;
+
+    if (QLineF(event->screenPos(), event->buttonDownScreenPos(Qt::LeftButton)).length()
+        < QApplication::startDragDistance()) {
         return;
     }
 
-    // 创建拖拽对象和数据对象
+    mDidDrag = true;
+
     QDrag* dragAction = new QDrag(event->widget());
     QMimeData* dragData = new QMimeData;
 
-    // 加载植物图标并设置拖拽数据
     QImage plantImage(":/new/prefix1/" + text + ".png");
     dragData->setText(text);
     dragData->setImageData(plantImage);
@@ -122,13 +160,25 @@ void card::mouseMoveEvent(QGraphicsSceneMouseEvent* event) {
     dragAction->setPixmap(QPixmap::fromImage(plantImage));
     dragAction->setHotSpot(QPoint(35, 35));
 
-    // 执行拖拽操作
     dragAction->exec();
-    setCursor(Qt::ArrowCursor);
 }
 
+
 // 重写鼠标释放事件处理函数
-void card::mouseReleaseEvent(QGraphicsSceneMouseEvent* event) {
-    Q_UNUSED(event);
-    setCursor(Qt::ArrowCursor);
+void card::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
+{
+    if (!mDidDrag && event->button() == Qt::LeftButton) {
+        shop* sh = qgraphicsitem_cast<shop*>(parentItem());
+        if (sh) {
+            if (sh->selectedPlant() == text) sh->clearSelection();
+            else sh->selectPlant(text);
+        }
+        event->accept();
+         mDidDrag = false;  // ✅释放后复位
+        return;
+    }
+
+    event->accept();
+    mDidDrag = false;      // ✅拖拽结束也复位（防止 release 不走上面分支）
 }
+

@@ -14,6 +14,94 @@
 #include <QPixmap>
 #include <QGuiApplication>
 #include <QScreen>
+#include <QMouseEvent>
+#include <QKeyEvent>
+#include <QEvent>
+#include <QtMath>
+// ✅这些数值你需要按你项目里“格子中心/大小”微调（最关键就这4个）
+// 如果你拖拽放下能对齐，那么 game.cpp 里一定有一段“dropPos -> 格子中心”的映射，
+// 直接把那段映射拿来替换这里的 snapToGrid 即可。
+static constexpr qreal kGridX0 = 290.0; // 第0列格子中心 x（与你注释(290,120)对齐）
+static constexpr qreal kGridY0 = 120.0; // 第0行格子中心 y（与你的僵尸/小车行中心对齐）
+static constexpr qreal kCellW  = 85.0;
+static constexpr qreal kCellH  = 95.0;
+static constexpr int   kCols   = 9;
+static constexpr int   kRows   = 5;
+
+
+static bool snapToGrid(const QPointF& scenePos, QPointF& snappedCenter)
+{
+    // 草坪有效矩形（以格子中心推出来）
+    const qreal xMin = kGridX0 - kCellW / 2;
+    const qreal xMax = kGridX0 + (kCols - 1) * kCellW + kCellW / 2;
+    const qreal yMin = kGridY0 - kCellH / 2;
+    const qreal yMax = kGridY0 + (kRows - 1) * kCellH + kCellH / 2;
+
+    // ✅不在草坪区域就不要“硬吸附”，让事件继续交给原来的 UI/物体处理
+    if (scenePos.x() < xMin || scenePos.x() > xMax ||
+        scenePos.y() < yMin || scenePos.y() > yMax)
+        return false;
+
+    const int col = qRound((scenePos.x() - kGridX0) / kCellW);
+    const int row = qRound((scenePos.y() - kGridY0) / kCellH);
+
+    if (col < 0 || col >= kCols || row < 0 || row >= kRows)
+        return false;
+
+    snappedCenter = QPointF(kGridX0 + col * kCellW,
+                            kGridY0 + row * kCellH);
+    return true;
+}
+static shop* findShop(QGraphicsScene* scene)
+{
+    for (QGraphicsItem* it : scene->items()) {
+        if (shop* sh = qgraphicsitem_cast<shop*>(it)) return sh;
+    }
+    return nullptr;
+}
+
+// bool game::eventFilter(QObject* watched, QEvent* event)
+// {
+//     if (watched == view->viewport() && event->type() == QEvent::MouseButtonPress) {
+//         QMouseEvent* me = static_cast<QMouseEvent*>(event);
+
+//         // 右键：取消选中（更像原版）
+//         if (me->button() == Qt::RightButton) {
+//             if (shop* sh = findShop(scene)) sh->clearSelection();
+//             return true;
+//         }
+
+//         if (me->button() != Qt::LeftButton) return QWidget::eventFilter(watched, event);
+
+//         const QPointF scenePos = view->mapToScene(me->pos());
+
+//         shop* sh = findShop(scene);
+//         if (!sh || !sh->hasSelection()) return QWidget::eventFilter(watched, event);
+
+//         QPointF plantPos;
+//         if (!snapToGrid(scenePos, plantPos)) return QWidget::eventFilter(watched, event);
+
+//         // ✅只有种成功才清除选中（点到已占格子时不取消）
+//         if (sh->tryAddPlant(sh->selectedPlant(), plantPos)) {
+//             sh->clearSelection();
+//         }
+
+//         return true;
+//     }
+
+//     return QWidget::eventFilter(watched, event);
+// }
+
+void game::keyPressEvent(QKeyEvent* event)
+{
+    if (event->key() == Qt::Key_Escape) {
+        if (shop* sh = findShop(scene)) sh->clearSelection();
+        event->accept();
+        return;
+    }
+    QWidget::keyPressEvent(event);
+}
+
 
 
 game::game(QWidget *parent)
@@ -71,6 +159,10 @@ game::game(QWidget *parent)
     // 连接计时器的timeout信号到游戏的check槽，检查游戏是否结束
     connect(mQTimer, &QTimer::timeout, this, &game::check);
     mQTimer->start(33); // 启动计时器，每33毫秒触发一次timeout信号，驱动游戏动画效果
+
+    view->setMouseTracking(true);
+    view->viewport()->setMouseTracking(true);
+    //view->viewport()->installEventFilter(this);
 
     view->show(); // 显示视图
 }

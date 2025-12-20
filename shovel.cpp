@@ -1,6 +1,6 @@
 #include "shovel.h"
 #include "plant.h"
-
+#include <QGraphicsScene>
 // 铲子类实现
 
 shovel::shovel()
@@ -58,12 +58,17 @@ void shovel::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 
 void shovel::removePlant(const QPointF& position)
 {
-    // 查找并移除指定位置的植物
-    const auto items = scene()->items(position);
+    if (!scene()) return;
+
+    // 用一个“格子范围”去找（你格子大概 85x95，这里取个近似值）
+    QRectF probe(position.x() - 45, position.y() - 50, 90, 100);
+
+    const auto items = scene()->items(probe, Qt::IntersectsItemBoundingRect, Qt::DescendingOrder);
     for (QGraphicsItem* item : items) {
-        if (item->type() == plant::Type) {
-            delete item;
-            break;
+        // 用 cast 判断是否为植物（包含 thorn）
+        if (qgraphicsitem_cast<plant*>(item)) {
+            delete item; // QGraphicsScene 会自动移除
+            return;
         }
     }
 }

@@ -1,5 +1,8 @@
 #include "shop.h"
 #include "plantselectionwidget.h"
+// 注意：shop.h 里不再 include card.h（为了解决循环包含），所以这里显式 include
+#include "card.h"
+#include <QRandomGenerator>
 
 // 商店类实现文件
 
@@ -26,10 +29,6 @@ shop::shop() {
     }
 }
 
-// 返回商店的边界矩形
-QRectF shop::boundingRect() const {
-    return QRectF(-270, -45, 540, 90);
-}
 
 // 绘制商店界面
 void shop::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
@@ -62,23 +61,44 @@ void shop::advance(int phase) {
         scene()->addItem(new sun);
     }
 }
+// ✅新增：选中态接口
+void shop::selectPlant(const QString& name) { mSelectedPlant = name; update(); }
+void shop::clearSelection() { mSelectedPlant.clear(); update(); }
+bool shop::hasSelection() const { return !mSelectedPlant.isEmpty(); }
+QString shop::selectedPlant() const { return mSelectedPlant; }
+
+QRectF shop::boundingRect() const { return QRectF(-270, -45, 540, 90); }
+
 
 // 添加植物到游戏场景
-void shop::addPlant(QString plantType, QPointF position) {
-    // 检查目标位置是否已有植物
-    QList<QGraphicsItem*> itemsAtPos = scene()->items(position);
-    foreach (QGraphicsItem* item, itemsAtPos) {
-        if (item->type() == plant::Type) {
-            return; // 已有植物，不添加
+// ✅加固后的 addPlant（防御检查 + 原逻辑）
+void shop::addPlant(const QString& plantType, const QPointF& position) {
+    if (!card::map.contains(plantType)) return;
+
+    const int idx = card::map[plantType];
+    const int needSun = card::cost[idx];
+    if (sunnum < needSun) return;
+
+    // 冷却检查：从自己的子卡片里找对应 card
+    for (QGraphicsItem* childItem : childItems()) {
+        if (card* c = qgraphicsitem_cast<card*>(childItem)) {
+            if (c->text == plantType) {
+                if (c->counter < card::cool[idx]) return;
+                break;
+            }
         }
     }
 
-    // 扣除阳光成本
-    sunnum -= card::cost[card::map[plantType]];
+    // 占位检查
+    for (QGraphicsItem* item : scene()->items(position)) {
+        if (item->type() == plant::Type) return;
+    }
 
-    // 创建并添加选中的植物
+    // 扣除阳光成本
+    sunnum -= needSun;
+
     plant* newPlant = nullptr;
-    switch (card::map[plantType]) {
+    switch (idx) {
     case 0: newPlant = new sunflower; break;
     case 1: newPlant = new pea; break;
     case 2: newPlant = new cherry; break;
@@ -91,30 +111,48 @@ void shop::addPlant(QString plantType, QPointF position) {
     case 9: newPlant = new thorn; break;
     }
 
-    if (newPlant) {
-        newPlant->setPos(position);
-        scene()->addItem(newPlant);
+    if (!newPlant) return;
 
-        // 重置对应卡片的冷却时间
-        QList<QGraphicsItem*> childItemsList = childItems();
-        foreach (QGraphicsItem* childItem, childItemsList) {
-            card* plantCard = qgraphicsitem_cast<card*>(childItem);
-            if (plantCard && plantCard->text == plantType) {
+    newPlant->setPos(position);
+    scene()->addItem(newPlant);
+
+    // 重置对应卡片冷却
+    for (QGraphicsItem* childItem : childItems()) {
+        if (card* plantCard = qgraphicsitem_cast<card*>(childItem)) {
+            if (plantCard->text == plantType) {
                 plantCard->counter = 0;
             }
         }
-
-        // 重置阳光生成计时器
-        // 逻辑：消费后下一颗阳光在 0~5 秒内随机出现
-        const int fiveSecondsFrames = int(5.0 * 1000 / 33.0);   // 5 秒对应的帧数
-        int remainFrames = QRandomGenerator::global()->bounded(fiveSecondsFrames + 1);
-        // remainFrames ∈ [0, fiveSecondsFrames]
-
-        // 让 counter 靠近 time，这样下一次触发 = remainFrames 帧后
-        counter = time - remainFrames;
-        if (counter < 0) counter = 0;   // 理论上 5 < 7，不会小于 0，保险起见
-
-        // 如果你还想“消费后立刻也刷新一下界面”，可以加一句：
-        // update();
     }
+
+    // 你原来的“消费后下一颗阳光更快出现”的逻辑保留
+    const int fiveSecondsFrames = int(4.0 * 1000 / 33.0);
+    int remainFrames = QRandomGenerator::global()->bounded(fiveSecondsFrames + 1);
+    counter = time - remainFrames;
+    if (counter < 0) counter = 0;
+}
+
+// ✅给 game.cpp 的 eventFilter 用：成功才返回 true
+bool shop::tryAddPlant(const QString& plantType, const QPointF& position)
+{
+    if (!card::map.contains(plantType)) return false;
+
+    const int idx = card::map[plantType];
+    if (sunnum < card::cost[idx]) return false;
+
+    card* foundCard = nullptr;
+    for (QGraphicsItem* childItem : childItems()) {
+        if (card* c = qgraphicsitem_cast<card*>(childItem)) {
+            if (c->text == plantType) { foundCard = c; break; }
+        }
+    }
+    if (!foundCard) return false;
+    if (foundCard->counter < card::cool[idx]) return false;
+
+    for (QGraphicsItem* item : scene()->items(position)) {
+        if (item->type() == plant::Type) return false;
+    }
+
+    addPlant(plantType, position);
+    return true;
 }

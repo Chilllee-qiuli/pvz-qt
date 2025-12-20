@@ -6,7 +6,7 @@
 #include "shop.h"
 #include "shovel.h"
 #include <QGraphicsSceneDragDropEvent>
-
+#include <QGraphicsSceneMouseEvent>
 class Map : public other
 {
 public:
@@ -18,6 +18,11 @@ public:
     void dropEvent(QGraphicsSceneDragDropEvent *event)override;
 private:
     bool dragover;
+    bool snapToGridFromScenePos(const QPointF& scenePos, QPointF& snappedScenePos) const;
+    shop* findShop() const;
+    shovel* findShovel() const;
+protected:
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 };
 
 

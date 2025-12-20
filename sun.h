@@ -19,6 +19,12 @@ private:
     int counter;
     int time;
     qreal speed;
+    bool collected = false;
+    void collectOnce();
+    bool pendingDelete = false;
+    void scheduleDestroy();
+protected:
+    void hoverEnterEvent(QGraphicsSceneHoverEvent* event) override;
 };
 
 

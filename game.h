@@ -8,14 +8,15 @@
 #include <QSound>
 #include <QMediaPlayer>
 #include <QMediaPlaylist>
-
+#include <QKeyEvent>
 class PauseButton; // 前向声明
 
 class game : public QWidget
 {
     Q_OBJECT
 public:
-    QSound* mQSound;
+    QSound* mQSound = nullptr;
+
     QTimer* mQTimer;
     QGraphicsView* view;
     QGraphicsScene* scene;
@@ -32,7 +33,9 @@ public:
 private:
     QMediaPlayer* bgmPlayer = nullptr;
     QMediaPlaylist* bgmPlaylist = nullptr; // 新增播放列表
-signals:
+protected:
+    //bool eventFilter(QObject* watched, QEvent* event) override;
+    void keyPressEvent(QKeyEvent* event) override; // 可选：ESC 取消
 
 };
 
